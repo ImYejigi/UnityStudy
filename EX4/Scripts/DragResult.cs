@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static DragFish;
+using UnityEngine.SceneManagement;
 
 
 public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerUpHandler, IPointerDownHandler
@@ -11,18 +13,32 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     public static Vector2 startPos; // 시작 위치
     public float detectRange; // 감지 범위
     private Vector2 oringPos; // 숫자 공 초기화 위치
+
+    public BallGameManager ballGameManager;
+    public ShadowDetect shadowDetect;
+    public Text endText;
+    public int Health;
+    
+    public BallState ballState = BallState.None;
+    public GameObject Result; // 정답 칸
+    public Vector2 originPos;
+    private Vector2 oPos;
+
+
     public enum BallState
     {
         None, Standby
     }
-    public BallState ballState = BallState.None;
-    public GameObject Result; // 정답 칸
 
-
-    // Start is called before the first frame update
     void Start()
     {
+        this.gameObject.layer = 3;
+        oPos = GetComponent<RectTransform>().position;
+        Health = 4;
+    }
 
+    void Update()
+    {
     }
     public void OnDrawGizmos()
     {
@@ -30,16 +46,10 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         Gizmos.DrawWireSphere(transform.position, detectRange);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
     // 드래그 시작
     void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
     {
+        
         startPos = eventData.position; // 시작 위치 초기화
 
     }
@@ -64,37 +74,71 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
+    IEnumerator OK()
+    {
+        yield return new WaitForSeconds(1.5f);
+        if (Health == 0)
+        {
+            endText.gameObject.SetActive(true);
+            Debug.Log("종료");
+        }
+        else
+        {
+            ballState = BallState.None;
+            GetComponent<RectTransform>().position = oPos;
+
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            --Health;
+            BallGameManager.instance.Restart();
+        }
+    }
 
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
     {
-        int layerMask = 1 << 8; //6번 레이어
+
+        int layerMask = 1 << 3; //6번 레이어
         var hits = Physics.SphereCastAll(transform.position, detectRange, Vector3.up, 0, layerMask);
-
-        if (hits.Length > 0)
+        int a = ballGameManager.RandomNumberOutput();
+        Debug.Log(shadowDetect.ballList[a - 1]);
+        switch (ballState)
         {
+            case BallState.None:
+                    GetComponent<RectTransform>().position = oPos;
+                break;
+           
 
-            switch (hits[0].transform.name)
-            {
-                case "ResultShadow":
-                    switch (ballState)
-                    {
-                        case BallState.None:
-                            transform.position = new Vector3(Result.transform.position.x, Result.transform.position.y, transform.position.z);
-                            transform.localScale = new Vector3(Result.transform.localScale.x, Result.transform.localScale.y, Result.transform.localScale.z);
-                            break;
-
-                        case BallState.Standby:
-                            break;
-                    }
-                    break;
-
-
-            }
         }
 
 
+        if (hits.Length > 0)
+        {
+          
+            bool isSelectBallMatched = false; // ball.name과 일치하는지 여부 저장하는 변수
 
+            foreach (var hit in hits)
+            {
+                if (hit.collider.gameObject.name == shadowDetect.ballList[a - 1].name)
+                {
+                    isSelectBallMatched = true;
+                    Debug.Log("정답.");
+                    StartCoroutine(OK());
+                }
+                
+            }
 
+            if (isSelectBallMatched)
+            {
+                shadowDetect.ballList[a - 1].transform.position = new Vector3(shadowDetect.transform.position.x, shadowDetect.transform.position.y, shadowDetect.transform.position.z);
+                shadowDetect.ballList[a - 1].transform.localScale = new Vector3(shadowDetect.transform.localScale.x, shadowDetect.transform.localScale.y, shadowDetect.transform.localScale.z);
+              ballState =  BallState.Standby;
+            }
+            if (!isSelectBallMatched)
+            {
+                ballState = BallState.None;
+            }
 
+            
+             
+        }
     }
 }

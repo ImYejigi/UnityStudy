@@ -1,13 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ShadowDetect : MonoBehaviour
 {
 
-
     public float detectRange; // 감지 범위
     public List<GameObject> ballList = new List<GameObject>();
+
+    public GameObject shadowDetect;
+
+    public BallGameManager ballGameManager;
+
+    public void Start()
+    {
+        this.gameObject.layer = 0;
+    }
+
+  
+    public void Update()
+    {
+    
+        
+    }
+
+
     public void OnDrawGizmos()
     {
 
@@ -15,15 +34,4 @@ public class ShadowDetect : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, detectRange);
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
