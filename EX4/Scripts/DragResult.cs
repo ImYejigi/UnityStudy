@@ -16,8 +16,8 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
     public BallGameManager ballGameManager;
     public ShadowDetect shadowDetect;
-    public Text endText;
-    public int Health;
+
+    public int Health = 5;
     
     public BallState ballState = BallState.None;
     public GameObject Result; // 정답 칸
@@ -27,14 +27,13 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
     public enum BallState
     {
-        None, Standby
+       None, Standby
     }
 
     void Start()
     {
         this.gameObject.layer = 3;
         oPos = GetComponent<RectTransform>().position;
-        Health = 4;
     }
 
     void Update()
@@ -77,20 +76,10 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     IEnumerator OK()
     {
         yield return new WaitForSeconds(1.5f);
-        if (Health == 0)
-        {
-            endText.gameObject.SetActive(true);
-            Debug.Log("종료");
-        }
-        else
-        {
-            ballState = BallState.None;
-            GetComponent<RectTransform>().position = oPos;
-
-            transform.localScale = new Vector3(1f, 1f, 1f);
-            --Health;
-            BallGameManager.instance.Restart();
-        }
+        ballState = BallState.None;
+        GetComponent<RectTransform>().position = oPos;
+        transform.localScale = new Vector3(1f, 1f, 1f);
+        BallGameManager.instance.Restart();
     }
 
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
@@ -104,6 +93,7 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         {
             case BallState.None:
                     GetComponent<RectTransform>().position = oPos;
+                    StartCoroutine(OK());
                 break;
            
 
@@ -121,7 +111,6 @@ public class DragResult : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
                 {
                     isSelectBallMatched = true;
                     Debug.Log("정답.");
-                    StartCoroutine(OK());
                 }
                 
             }
