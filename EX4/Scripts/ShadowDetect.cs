@@ -14,9 +14,11 @@ public class ShadowDetect : MonoBehaviour
 
     public BallGameManager ballGameManager;
 
+    public int correctAnswer;
+
     public void Start()
     {
-        this.gameObject.layer = 0;
+        this.gameObject.layer = 8;
     }
 
   

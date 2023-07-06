@@ -6,18 +6,20 @@ using UnityEngine.EventSystems;
 using static DragResult;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using System.Data.Common;
 
 public class BallGameManager : MonoBehaviour
 {
     public List<GameObject> numBallSprite = new List<GameObject>(); // 문제에 해당하는 공들
     public List<GameObject> movingBallSprite = new List<GameObject>(); // 기계 안에서 굴러다니는 공들
     public List<GameObject> opBallSprite = new List<GameObject>(); // 연산자
-
+    public GameClearController gameClearController;
     public int result; //결과 값
     public int randomBall; //랜덤 볼
     public int Operator; //연산자
-    public Text ClearText; // 종료 텍스트
-    private Vector3 startBallPos = new Vector3(-3, -533, 0);
+    public Text clearText; // 종료 텍스트 
+    public List<GameObject> rottoGameSprite = new List<GameObject>();
+
     private Vector3 firstBallPos = new Vector3(150, 340, 0);
     private Vector3 operBallPos = new Vector3(470, 340, 0);
     private Vector3 SecondBallpos = new Vector3(790, 340, 0);
@@ -29,17 +31,18 @@ public class BallGameManager : MonoBehaviour
     public List<RectTransform> questionBall = new List<RectTransform>();
     public Transform ballStartPos;
 
-    //public enum ShadowBallState
-    //{
-    //    One,Two,None
-    //} 
-    // Start is called before the first frame update
+    public ShadowDetect shadowDetect;
+
     void Start()
     {
 
-        RandomNumberOutput();
+       
     }
 
+    public void OnEnable()
+    {
+        RandomNumberOutput();
+    }
     public static BallGameManager instance;
 
     private void Awake()
@@ -47,28 +50,34 @@ public class BallGameManager : MonoBehaviour
         instance = this;
     }
     public void Restart()
+
     {
+
         opBallSprite[0].SetActive(false);
         opBallSprite[1].SetActive(false);
         Debug.Log(Operator);
         opBallSprite[Operator].transform.localPosition = startPos;
-        for (int i = 0; i<10 ; i++)
+        for (int i = 0; i < 10; i++)
         {
             numBallSprite[i].SetActive(false);
             movingBallSprite[i].SetActive(true);
-            
+
         }
         randNum.Clear();
-        BallGameNext();
-        
+        //RandomNumberOutput();
+        //BallGameNext();
+
     }
+
     // 로또 숫자 추첨하기.
     public int RandomNumberOutput()
     {
+        
+        
         Operator = Random.Range(0, opBallSprite.Count);
 
 
-        
+
         while (randNum.Count < 2)
         {
             
@@ -107,15 +116,15 @@ public class BallGameManager : MonoBehaviour
                     {
                         if (randNum.Count == 2)
                         {
-                                result = numOutput - randNum[0];
+                             result = Mathf.Abs(numOutput - randNum[0]);
                         }
                         break;
                     }
             }
-
         }
-        
-        return Mathf.Abs(result);
+        shadowDetect.correctAnswer = result;
+
+        return  result;
     }
 
 
@@ -141,6 +150,10 @@ public class BallGameManager : MonoBehaviour
         movingBallSprite[randNum[0]].gameObject.SetActive(false);
     }
 
+    void Update()
+    {
+    
+    }
     IEnumerator MoveTo(GameObject a, Vector3 toPos)
     {
         float count = 0;
@@ -163,39 +176,34 @@ public class BallGameManager : MonoBehaviour
         }
     }
 
-// Update is called once per frame
+    // Update is called once per frame
 
 
-void Update()
-    {
-        
-    }
 
-    public void BallGameNext()
-    {
-        ballGameCount++;
-        RandomNumberOutput();
-        if (ballGameCount <= 5) 
-        {
-            CapsuleBallReset();
-            Debug.Log("게임 남은 횟수 : " + ballGameCount);
-            
-            
-        }
-        else
-        {
-            CapsuleBallReset();
-            ClearText.gameObject.SetActive(true);
-        }
-    }
+
+    //public void BallGameNext()
+    //{
+
+    //    ballGameCount++;
+    //    RandomNumberOutput();
+    //    if (ballGameCount <= 5)
+    //    {
+    //        CapsuleBallReset();
+    //        Debug.Log("게임 남은 횟수 : " + ballGameCount);
+    //    }
+    //    else
+    //    {
+    //        CapsuleBallReset();
+    //        ClearText.gameObject.SetActive(true);
+    //    }
+    //}
 
     public void CapsuleBallReset()
     {
         for(int i = 0; i < questionBall.Count; i++)
         {
             questionBall[i].position = ballStartPos.GetComponent<RectTransform>().position;
-            questionBall[i].localScale = Vector3.one;
-            
+            questionBall[i].localScale = Vector3.one;       
         }
     }
 

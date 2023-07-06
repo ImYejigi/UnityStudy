@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CatFishManager : MonoBehaviour
 {
-
+    public GameClearController gameClearController;
     public enum CatFishState
     {
         Stanby, Play, Result
@@ -83,6 +83,7 @@ public class CatFishManager : MonoBehaviour
         if (redDish.fishCount == redFishCount && blueDish.fishCount == blueFishCount)
         {
             resultText.text = "성공!";
+            SuccessGame();
         }
         else
         {
@@ -118,6 +119,10 @@ public class CatFishManager : MonoBehaviour
         // 파랑접시에 필요한 물고기의 개수를 텍스트로 표시
         blueFishText.text = blueFishCount.ToString();
 
+    }
+    void SuccessGame()
+    {
+        gameClearController.UpdateClearCount();
     }
 
     //물고기를 드랙 시작할 때 선택한 물고기만 움직이게 하는 함수
