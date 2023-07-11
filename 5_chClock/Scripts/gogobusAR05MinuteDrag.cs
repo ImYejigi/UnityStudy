@@ -2,12 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
-public class ClockARManager : MonoBehaviour
+public class gogobus : MonoBehaviour
 {
     public GameObject hourHand;
     public GameObject minuteHand;
@@ -17,17 +16,10 @@ public class ClockARManager : MonoBehaviour
     public InputField inputTextMinute;
 
     private int randomNum;
-    [Range(0, 12)]
-    public int hourTempCount;
-    [Range(0, 60)]
-    public int minuteTempCount;
-
     [SerializeField]
     private GameObject timePin;
-
     [SerializeField]
     private Vector3 touchPos;
-
     public Transform target;
 
     public List<Transform> timeAngle = new List<Transform>();
@@ -40,7 +32,7 @@ public class ClockARManager : MonoBehaviour
     {
         randomNum = UnityEngine.Random.Range(0, 59);
         minuteRandom.Add(0);
-        
+
 
         for (int i = 1; i < 12; i++)
         {
@@ -49,33 +41,33 @@ public class ClockARManager : MonoBehaviour
         }
 
         inputTextHour.text = UnityEngine.Random.Range(1, 13).ToString();
-        inputTextMinute.text = minuteRandom[UnityEngine.Random.Range(0, 12)].ToString(); 
+        inputTextMinute.text = minuteRandom[UnityEngine.Random.Range(0, 12)].ToString();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                if(hit.transform.GetComponent<TimePinDummy>())
+                if (hit.transform.GetComponent<TimePinDummy>())
                 {
                     timePin = hit.transform.GetComponent<TimePinDummy>().timePin;
                 }
             }
         }
 
-        if(Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
             float posZ = Camera.main.WorldToScreenPoint(target.position).z;
             Vector3 touchPos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, posZ);
             Vector3 dragPos = Camera.main.ScreenToWorldPoint(touchPos);
             target.position = dragPos;
 
-            if(timePin)
+            if (timePin)
             {
                 for (int i = 0; i < angleDist.Count; i++)
                 {
@@ -94,6 +86,5 @@ public class ClockARManager : MonoBehaviour
             }
         }
     }
-
 
 }
