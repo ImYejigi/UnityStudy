@@ -11300,6 +11300,7 @@ MonoBehaviour:
   maxValue: 59
   hourTempCount: 12
   minuteTempCount: 60
+  minuteRandom: 
 --- !u!1 &3897939490957662122
 GameObject:
   m_ObjectHideFlags: 0
