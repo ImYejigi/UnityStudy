@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -10,9 +9,9 @@ using UnityEngine.XR.ARSubsystems;
 
 public class ClockAR : MonoBehaviour
 {
-    public ARRaycastManager raycastManager;//AR레이캐스트 매니저
     public GameObject arPrefab;//AR프리팹
     private GameObject arObject;//생성되는 AR오브젝트 
+    public MaterialsChange materialsChange;
 
     public GameClearController gameClearController;
 
@@ -26,22 +25,33 @@ public class ClockAR : MonoBehaviour
 
     public int minValue = 0;
     public int maxValue = 59;
-
     [Range(0, 12)]
     public int hourTempCount;
     [Range(0,60)]
     public int minuteTempCount;
+
+    public List<int> minuteRandom = new List<int>();
+
     // Start is called before the first frame update
     void Start()
     {
         RandomClock();
+        materialsChange.SmileExpression();
     }
 
     void RandomClock()
     {
+
+
+        for (int i = 1; i < 12; i++)
+        {
+            int j = i * 5;
+            minuteRandom.Add(j);
+        }
+
         randomHour = Random.Range(1, 13);
-        randomMinute = Random.Range(0, 60);
-        hourHand.transform.rotation = Quaternion.Euler(0, 0, (randomHour * -30f) + (randomMinute * -0.5f ));
+        randomMinute = minuteRandom[Random.Range(0, 12)];
+        hourHand.transform.rotation = Quaternion.Euler(0, 0, randomHour * -30f);
         minuteHand.transform.rotation = Quaternion.Euler(0, 0, randomMinute * -6f);
         
     }
@@ -66,19 +76,16 @@ public class ClockAR : MonoBehaviour
         else if(randomHour == int.Parse(inputTextHour.text))
         {
             Debug.Log("시간 정답!");
-            correctText.text = "시간 정답!";
             StartCoroutine(TextDelay());
         }
         else if (randomMinute == int.Parse(inputTextMinute.text))
         {
             Debug.Log("분 정답!");
-            correctText.text = "분 정답!";
             StartCoroutine(TextDelay());
         }
         else
         {
             Debug.Log("다시해봐요!");
-            correctText.text = "다시해봐요!";
             StartCoroutine(TextDelay());
         }
     }
@@ -97,13 +104,14 @@ public class ClockAR : MonoBehaviour
 
     IEnumerator TextDelay()
     {
-        correctText.gameObject.SetActive(true);
+        
+        materialsChange.SadExpression();
         yield return new WaitForSeconds(1.5f);
-        correctText.gameObject.SetActive(false);
+        materialsChange.SmileExpression();
     }
     IEnumerator NextStage()
     {
-        correctText.gameObject.SetActive(true);
+        materialsChange.WinkExpression();
         yield return new WaitForSeconds(1.5f);
         gameClearController.UpdateClearCount();
     }

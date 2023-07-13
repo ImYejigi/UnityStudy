@@ -50,13 +50,15 @@ public class ARCreator : MonoBehaviour
                     }
                     raycastManager.GetComponent<ARPlaneManager>().enabled = false;
                     //AR프리팹을 생성하여 첫번째 터치 지점의 위치와 회전값으로 초기화한다
-                    arObject = Instantiate(arPrefab, hitPose.position, hitPose.rotation);
+                    //arObject = Instantiate(arPrefab, hitPose.position, hitPose.rotation);
+                    arPrefab.SetActive(true);
+                    arObject = arPrefab;
                 }
                 //생성된 AR오브젝트가 있을 경우
                 else
                 {
                     //터치한 지점으로 생성된 AR오브젝트를 재배치한다
-                    arObject.transform.SetPositionAndRotation(hitPose.position, hitPose.rotation);
+                    //arObject.transform.SetPositionAndRotation(hitPose.position, hitPose.rotation);
                 }
             }
         }

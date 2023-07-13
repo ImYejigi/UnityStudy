@@ -3,33 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Burst.Intrinsics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ClockARManager : MonoBehaviour
 {
-    public GameObject hourHand;
-    public GameObject minuteHand;
+    public MaterialsChange materialsChange;
+    public GameClearController gameClearController;
     public int minValue = 0;
     public int maxValue = 59;
     public InputField inputTextHour;
     public InputField inputTextMinute;
 
-    private int randomNum;
     [Range(0, 12)]
     public int hourTempCount;
     [Range(0, 60)]
     public int minuteTempCount;
 
-    [SerializeField]
     private GameObject timePin;
 
-    [SerializeField]
-    private Vector3 touchPos;
-
     public Transform target;
-
+    private int hourtime;
+    private int minutetime;
     public List<Transform> timeAngle = new List<Transform>();
     public List<float> angleDist = new List<float>();
     public List<int> minuteRandom = new List<int>();
@@ -38,7 +35,7 @@ public class ClockARManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        randomNum = UnityEngine.Random.Range(0, 59);
+        materialsChange.SadExpression();
         minuteRandom.Add(0);
         
 
@@ -64,6 +61,11 @@ public class ClockARManager : MonoBehaviour
                 if(hit.transform.GetComponent<TimePinDummy>())
                 {
                     timePin = hit.transform.GetComponent<TimePinDummy>().timePin;
+                    hit.transform.gameObject.SetActive(false);
+                }
+                else
+                {
+                    timePin = hit.transform.gameObject;
                 }
             }
         }
@@ -93,7 +95,43 @@ public class ClockARManager : MonoBehaviour
                 //timePin.transform.rotation = rotation;
             }
         }
+        if (Input.GetMouseButtonUp(0))
+        {
+            Debug.Log(timePin);
+            
+            if(timePin.name == "HourCol")
+            {
+                if(minIndex == 0)
+                {
+                    hourtime += 12;
+                    
+                }
+                hourtime = minIndex;
+                
+                Debug.Log(hourtime);
+            }
+            if(timePin.name == "MinuteCol")
+            {
+                
+                minutetime = minuteRandom[minIndex];
+                Debug.Log(minutetime);
+            }
+            if(hourtime.ToString() == inputTextHour.text && minutetime.ToString() == inputTextMinute.text)
+            {
+                materialsChange.WinkExpression();
+                Success();
+            }
+            timePin.GetComponent<BoxCollider>().enabled = true;
+            timePin = null;
+        }
+
+       
     }
 
+    void Success()
+    {
+        gameClearController.UpdateClearCount();
+    }
 
+    
 }
