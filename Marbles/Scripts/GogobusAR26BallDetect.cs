@@ -1,36 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GogobusAR26BallDetect : MonoBehaviour
 {
-    public float detectRange; // 감지 범위
-    public List<GameObject> ballList = new List<GameObject>();
+    public GameClearController gameClearController;
+    public InputField marbleResult;
+    public int objCount = 15;
 
-    public GameObject shadowDetect;
-
-    public BallGameManager ballGameManager;
-
-    public int correctAnswer;
-
-    public void Start()
+    public void OnTriggerExit(Collider other)
     {
-        this.gameObject.layer = 8;
+        objCount--;
+        Debug.Log(objCount);
     }
-
-
-    public void Update()
+    public void ResultSet()
     {
-
-
+        Debug.Log(objCount);
+        if(objCount.ToString() == marbleResult.text)
+        {
+            gameClearController.UpdateClearCount();
+        }
     }
-
-
-    public void OnDrawGizmos()
-    {
-
-        // 와이어 스피어를 그린다.( 그릴 위치, 반지름)
-        Gizmos.DrawWireSphere(transform.position, detectRange);
-    }
-
 }
