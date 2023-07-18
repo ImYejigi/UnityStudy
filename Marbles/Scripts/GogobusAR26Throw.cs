@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class GogobusAR26Throw : MonoBehaviour
+public class GogobusAR26Throw : MonoBehaviour 
 {
     //드래그 사인
     bool dragging = false;
@@ -14,10 +15,14 @@ public class GogobusAR26Throw : MonoBehaviour
     public float archSpeed;
     //드래그 속도
     public float dragSpeed;
-
+    //초기 포지션 값
+     Vector3 oldBallVector;
+    //포지션 값 측정
+     Vector3 defaultBallVector;
     //초기 회전값
     Vector3 initRot;
 
+    //
     //마우스 드래그 포지션 (드래그 방향, 마우스 시작 지점, 마우스 종료 지점)
     public Vector2 direction, startPos, endPos;
     //클릭 시간 (클릭 시작 시간, 클릭 종료 시간, 시작부터 종료까지 걸린 시간)
@@ -33,6 +38,8 @@ public class GogobusAR26Throw : MonoBehaviour
     {
         //초기 회전값
         initRot = transform.rotation.eulerAngles;
+        oldBallVector = this.gameObject.transform.position;
+        Debug.Log(oldBallVector);
     }
 
     // Update is called once per frame
@@ -98,5 +105,9 @@ public class GogobusAR26Throw : MonoBehaviour
         //드래그 사인 False
         dragging = false;
     }
- 
+
+    public void ShootingBall() 
+    {
+        
+    }
 }

@@ -41,8 +41,6 @@ public class ClockAR : MonoBehaviour
 
     void RandomClock()
     {
-
-
         for (int i = 1; i < 12; i++)
         {
             int j = i * 5;
@@ -50,18 +48,27 @@ public class ClockAR : MonoBehaviour
         }
 
         randomHour = Random.Range(1, 13);
-        randomMinute = minuteRandom[Random.Range(0, 12)];
+        randomMinute = minuteRandom[Random.Range(1, 12)];
         hourHand.transform.rotation = Quaternion.Euler(0, 0, randomHour * -30f);
         minuteHand.transform.rotation = Quaternion.Euler(0, 0, randomMinute * -6f);
-        
     }
 
-    // Update is called once per frame
-    void Update()
+    //
+    public string ReturnHour()
     {
-        
-        
+        return randomHour.ToString();
     }
+
+    public string ReturnMinute()
+    {
+        return randomMinute.ToString();
+    }
+
+    
+
+
+
+    //
     public void ResultSet()
     {
 

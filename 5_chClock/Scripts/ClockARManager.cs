@@ -25,7 +25,7 @@ public class ClockARManager : MonoBehaviour
     private GameObject timePin;
 
     public Transform target;
-    private int hourtime;
+    private int hourtime = 12;
     private int minutetime;
     public List<Transform> timeAngle = new List<Transform>();
     public List<float> angleDist = new List<float>();
@@ -101,13 +101,12 @@ public class ClockARManager : MonoBehaviour
             
             if(timePin.name == "HourCol")
             {
-                if(minIndex == 0)
+                
+                hourtime = minIndex;
+                if (minIndex == 0)
                 {
                     hourtime += 12;
-                    
                 }
-                hourtime = minIndex;
-                
                 Debug.Log(hourtime);
             }
             if(timePin.name == "MinuteCol")
