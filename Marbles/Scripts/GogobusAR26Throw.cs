@@ -5,6 +5,10 @@ using UnityEngine.EventSystems;
 
 public class GogobusAR26Throw : MonoBehaviour 
 {
+    public MainBallState mainBallState;
+    public enum MainBallState{
+        None, Ready
+    }
     //드래그 사인
     bool dragging = false;
     //카메라와의 거리
@@ -32,7 +36,7 @@ public class GogobusAR26Throw : MonoBehaviour
     //던지기 Z속도
     public float throwForceZ = 50.0f;
 
-
+    public float marblePower;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,6 +49,12 @@ public class GogobusAR26Throw : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        if(mainBallState == MainBallState.Ready)
+        {
+            transform.Translate(new Vector3(0, 0, 0.01f * marblePower * Time.deltaTime), Space.Self);
+        }
+
         //드래그할때 물체가 쫓아오게 만든다.
         if (dragging)
         {
@@ -108,6 +118,8 @@ public class GogobusAR26Throw : MonoBehaviour
 
     public void ShootingBall() 
     {
-        
+        //mainBallState = MainBallState.Ready;
+
+        GetComponent<Rigidbody>().AddForce(transform.forward* marblePower *Time.deltaTime , ForceMode.Impulse);
     }
 }
