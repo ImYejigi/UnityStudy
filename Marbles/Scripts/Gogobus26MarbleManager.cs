@@ -52,6 +52,7 @@ public class Gogobus26MarbleManager : MonoBehaviour
                     //AR프리팹을 생성하여 첫번째 터치 지점의 위치와 회전값으로 초기화한다
                     //arObject = Instantiate(arPrefab, hitPose.position, hitPose.rotation);
                     arPrefab.SetActive(true);
+                    arPrefab.transform.SetPositionAndRotation(hitPose.position, hitPose.rotation);
                     arObject = arPrefab;
                 }
                 //생성된 AR오브젝트가 있을 경우

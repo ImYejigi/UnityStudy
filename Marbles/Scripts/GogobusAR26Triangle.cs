@@ -10,6 +10,7 @@ public class GogobusAR26Triangle : MonoBehaviour
     public List<GameObject> allMarbles = new List<GameObject>();
     public List<GameObject> marbles = new List<GameObject>();
     public InputField marbleResult;
+    public Text failedText;
     // Start is called before the first frame update
     void Start()
     {
@@ -46,5 +47,18 @@ public class GogobusAR26Triangle : MonoBehaviour
         {
             gameClearController.UpdateClearCount();
         }
+        else
+        {
+            marbleResult.text = "";
+
+            StartCoroutine(WrongResult());
+        }
     }
+    IEnumerator WrongResult()
+    {
+        
+        failedText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
+        failedText.gameObject.SetActive(false);
+    } 
 }
